@@ -4,12 +4,13 @@ import BN from 'bn.js'
 
 import tokenService from '@utils/services/token'
 import VoteResultsBar from '@components/VoteResultsBar'
-import {
+import Stream, {
   StreamClient,
   Cluster,
   getNumberFromBN,
-  Stream,
 } from '@streamflow/stream'
+
+import type { Stream as StreamType } from '@streamflow/stream'
 import { PERIOD } from 'pages/dao/[symbol]/proposal/components/instructions/Streamflow/CreateStream'
 
 export const DEFAULT_DECIMAL_PLACES = 2
@@ -146,6 +147,20 @@ async function getStreamCreateDataUI(
     const metadataIndex = hasExplicitPayer ? 3 : 2
     const mintIndex = hasExplicitPayer ? 6 : 5
     const contractMetadata = accounts[metadataIndex].pubkey
+
+    /**
+     * Fetch stream data by its id (address).
+     * @param {GetStreamParams} data
+     * @param {Connection} data.connection - A connection to the cluster.
+     * @param {string} data.id - Identifier of a stream that is fetched.
+     */
+    const metadata = await Stream.getOne({
+      connection,
+      id: contractMetadata.toBase58(),
+    })
+
+    console.log('METADATA', metadata)
+
     const mint = accounts[mintIndex].pubkey
     const stream = await cli.getOne(contractMetadata.toBase58())
     const isExecuted = stream.createdAt > 0

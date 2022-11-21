@@ -20,7 +20,8 @@
       "@hub/*": ["hub/*"],
       "@tools/*": ["tools/*"],
       "@models/*": ["models/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@packages/*": ["packages/*"]
     },
     "incremental": true,
     "isolatedModules": true
