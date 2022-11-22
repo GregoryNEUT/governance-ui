@@ -11,6 +11,7 @@ import { consts as foresightConsts } from '@foresight-tmp/foresight-sdk'
 import { AssetAccount, StakeAccount } from '@utils/uiTypes/assets'
 import { RealmInfo } from '@models/registry/api'
 import * as Msp from '@mean-dao/msp'
+import { PoolName as MapleFinancePoolName } from '@utils/instructions/MapleFinance/poolList'
 
 export interface UiInstruction {
   serializedInstruction: string
@@ -504,6 +505,11 @@ export interface JoinDAOForm {
   amount?: number
 }
 
+export interface MapleFinanceLenderInitializeForm {
+  governedTokenAccount?: AssetAccount
+  poolName?: MapleFinancePoolName
+}
+
 export enum Instructions {
   Transfer,
   ProgramUpgrade,
@@ -593,6 +599,7 @@ export enum Instructions {
   SerumUpdateGovConfigAuthority,
   JoinDAO,
   ClaimMangoTokens,
+  MapleFinanceLenderInitialize,
 }
 
 export type createParams = [

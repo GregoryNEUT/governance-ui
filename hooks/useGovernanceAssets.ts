@@ -589,6 +589,11 @@ export default function useGovernanceAssets() {
       name: 'Serum: Update Governance Config Authority',
       isVisible: canUseAnyInstruction,
     },
+    {
+      id: Instructions.MapleFinanceLenderInitialize,
+      name: 'Maple Finance: Lender Initialize',
+      isVisible: canUseAnyInstruction,
+    },
     ...foresightInstructions,
   ]
   return {
