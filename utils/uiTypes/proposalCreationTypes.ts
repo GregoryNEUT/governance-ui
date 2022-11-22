@@ -506,8 +506,14 @@ export interface JoinDAOForm {
 }
 
 export interface MapleFinanceLenderInitializeForm {
-  governedTokenAccount?: AssetAccount
+  governedAccount?: AssetAccount
   poolName?: MapleFinancePoolName
+}
+
+export interface MapleFinanceLenderDepositForm {
+  governedAccount?: AssetAccount
+  poolName?: MapleFinancePoolName
+  depositAmount?: number
 }
 
 export enum Instructions {
@@ -600,6 +606,7 @@ export enum Instructions {
   JoinDAO,
   ClaimMangoTokens,
   MapleFinanceLenderInitialize,
+  MapleFinanceLenderDeposit,
 }
 
 export type createParams = [

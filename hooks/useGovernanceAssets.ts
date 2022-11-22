@@ -594,6 +594,11 @@ export default function useGovernanceAssets() {
       name: 'Maple Finance: Lender Initialize',
       isVisible: canUseAnyInstruction,
     },
+    {
+      id: Instructions.MapleFinanceLenderDeposit,
+      name: 'Maple Finance: Lender Deposit',
+      isVisible: canUseAnyInstruction,
+    },
     ...foresightInstructions,
   ]
   return {

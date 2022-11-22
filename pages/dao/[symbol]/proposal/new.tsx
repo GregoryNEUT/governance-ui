@@ -128,6 +128,7 @@ import UpdateConfigAuthority from './components/instructions/Serum/UpdateConfigA
 import UpdateConfigParams from './components/instructions/Serum/UpdateConfigParams'
 import ClaimMangoTokens from './components/instructions/Mango/ClaimTokens'
 import MapleFinanceLenderInitialize from './components/instructions/MapleFinance/LenderInitialize'
+import MapleFinanceLenderDeposit from './components/instructions/MapleFinance/LenderDeposit'
 
 const TITLE_LENGTH_LIMIT = 130
 
@@ -533,6 +534,7 @@ const New = () => {
       [Instructions.JoinDAO]: JoinDAO,
       [Instructions.ClaimMangoTokens]: ClaimMangoTokens,
       [Instructions.MapleFinanceLenderInitialize]: MapleFinanceLenderInitialize,
+      [Instructions.MapleFinanceLenderDeposit]: MapleFinanceLenderDeposit,
     }),
     []
   )
