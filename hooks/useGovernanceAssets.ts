@@ -599,6 +599,21 @@ export default function useGovernanceAssets() {
       name: 'Maple Finance: Lender Deposit',
       isVisible: canUseAnyInstruction,
     },
+    {
+      id: Instructions.MapleFinanceLenderUnlockDeposit,
+      name: 'Maple Finance: Lender Unlock Deposit',
+      isVisible: canUseAnyInstruction,
+    },
+    {
+      id: Instructions.MapleFinanceWithdrawalRequestInitialize,
+      name: 'Maple Finance: Withdrawal Request Initialize',
+      isVisible: canUseAnyInstruction,
+    },
+    {
+      id: Instructions.MapleFinanceWithdrawalRequestExecute,
+      name: 'Maple Finance: Withdrawal Request Execute',
+      isVisible: canUseAnyInstruction,
+    },
     ...foresightInstructions,
   ]
   return {

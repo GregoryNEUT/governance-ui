@@ -516,6 +516,23 @@ export interface MapleFinanceLenderDepositForm {
   depositAmount?: number
 }
 
+export interface MapleFinanceLenderUnlockDepositForm {
+  governedAccount?: AssetAccount
+  poolName?: MapleFinancePoolName
+}
+
+export interface MapleFinanceWithdrawalRequestInitializeForm {
+  governedAccount?: AssetAccount
+  poolName?: MapleFinancePoolName
+  sharesAmount?: number
+}
+
+export interface MapleFinanceWithdrawalRequestExecuteForm {
+  governedAccount?: AssetAccount
+  poolName?: MapleFinancePoolName
+  withdrawalRequestAddress?: string
+}
+
 export enum Instructions {
   Transfer,
   ProgramUpgrade,
@@ -607,6 +624,9 @@ export enum Instructions {
   ClaimMangoTokens,
   MapleFinanceLenderInitialize,
   MapleFinanceLenderDeposit,
+  MapleFinanceLenderUnlockDeposit,
+  MapleFinanceWithdrawalRequestInitialize,
+  MapleFinanceWithdrawalRequestExecute,
 }
 
 export type createParams = [

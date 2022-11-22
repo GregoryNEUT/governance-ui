@@ -11,29 +11,28 @@ import { PublicKey } from '@solana/web3.js'
 import useWalletStore from 'stores/useWalletStore'
 import { validateInstruction } from '@utils/instructionTools'
 import {
-  MapleFinanceLenderDepositForm,
+  MapleFinanceWithdrawalRequestExecuteForm,
   UiInstruction,
 } from '@utils/uiTypes/proposalCreationTypes'
 import Select from '@components/inputs/Select'
 import { pools } from '@utils/instructions/MapleFinance/poolList'
 import useGovernanceAssets from '@hooks/useGovernanceAssets'
 import useWallet from '@hooks/useWallet'
-import Input from '@components/inputs/Input'
-import { uiToNative } from '@blockworks-foundation/mango-client'
-import { tryGetMint } from '@utils/tokens'
 import GovernedAccountSelect from '../../GovernedAccountSelect'
 import { NewProposalContext } from '../../../new'
+import { tryGetMint } from '@utils/tokens'
+import Input from '@components/inputs/Input'
+import { findATAAddrSync } from '@utils/ataTools'
 
 const schema = yup.object().shape({
   governedAccount: yup.object().required('Governed token account is required'),
   poolName: yup.string().required('Pool Name is required'),
-  depositAmount: yup
-    .number()
-    .moreThan(0, 'Deposit amount should be more than 0')
-    .required('Deposit amount is required'),
+  withdrawalRequestAddress: yup
+    .string()
+    .required('Withdrawal Request Address is required'),
 })
 
-const LenderDepositForm = ({
+const WithdrawalRequestExecuteForm = ({
   index,
   governance,
 }: {
@@ -45,7 +44,7 @@ const LenderDepositForm = ({
   const { anchorProvider } = useWallet()
   const { governedTokenAccountsWithoutNfts } = useGovernanceAssets()
   const { handleSetInstructions } = useContext(NewProposalContext)
-  const [form, setForm] = useState<MapleFinanceLenderDepositForm>({})
+  const [form, setForm] = useState<MapleFinanceWithdrawalRequestExecuteForm>({})
   const [formErrors, setFormErrors] = useState({})
 
   const handleSetForm = ({ propertyName, value }) => {
@@ -65,7 +64,7 @@ const LenderDepositForm = ({
 
   const getInstruction = async (): Promise<UiInstruction> => {
     const isValid = await validateInstruction({ schema, form, setFormErrors })
-    const { governedAccount, poolName, depositAmount } = form
+    const { governedAccount, poolName, withdrawalRequestAddress } = form
 
     if (
       !isValid ||
@@ -74,7 +73,7 @@ const LenderDepositForm = ({
       !poolName ||
       !wallet ||
       !wallet.publicKey ||
-      typeof depositAmount === 'undefined'
+      !withdrawalRequestAddress
     ) {
       return {
         serializedInstruction: '',
@@ -82,6 +81,8 @@ const LenderDepositForm = ({
         governance: governedAccount?.governance,
       }
     }
+
+    const withdrawalRequestPubkey = new PublicKey(withdrawalRequestAddress)
 
     const syrupClient = SyrupClient.load({
       // anchorProvider is enough match, that's why we force the compatibility with any
@@ -92,32 +93,47 @@ const LenderDepositForm = ({
 
     const poolData = await syrupClient.program.account.pool.fetch(pool)
 
-    const tokenMint = await tryGetMint(connection, poolData.baseMint)
-    if (!tokenMint) {
+    const withdrawalRequestData = await syrupClient.program.account.withdrawalRequest.fetch(
+      withdrawalRequestPubkey
+    )
+
+    const sharesMint = await tryGetMint(connection, poolData.sharesMint)
+    if (!sharesMint) {
       throw new Error(
-        `Cannot load maple pool base mint for ${poolData.baseMint.toBase58()}`
+        `Cannot load maple pool shares mint info for ${poolData.baseMint.toBase58()}`
       )
     }
 
-    // Use the baseMint ATA for deposit
-    const tx = await syrupClient.lenderActions().deposit({
-      amount: uiToNative(form.depositAmount!, tokenMint.account.decimals),
+    // Needs to renew PublicKey to avoid:
+    // TypeError: The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object
+    // tbh not sure why, since starts seems the variable is a PublicKey imported from solana/web3.js which is correct
+    const lenderUser = new PublicKey(governedAccount.pubkey.toBase58())
+
+    // Use BaseMint ATA for fund reception
+    const tx = await syrupClient.lenderActions().executeWithdrawalRequest({
       pool: {
         address: pool,
         data: poolData as AccountData<'pool'>,
       },
-      // Needs to renew PublicKey to avoid:
-      // TypeError: The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object
-      // tbh not sure why, since starts seems the variable is a PublicKey imported from solana/web3.js which is correct
-      lenderUser: new PublicKey(governedAccount.pubkey.toBase58()),
+
+      withdrawalRequest: {
+        address: withdrawalRequestPubkey,
+        data: withdrawalRequestData,
+      },
+
+      lenderUser,
+      lenderLocker: findATAAddrSync(lenderUser, poolData.baseMint)[0],
+      lenderShareLocker: findATAAddrSync(lenderUser, poolData.sharesMint)[0],
     })
 
-    if (!tx.instructions.length) {
+    if (tx.instructions.length !== 2) {
       throw new Error(
-        'Unexpected amount of instructions generated by deposit function (maple sdk)'
+        'Unexpected amount of instructions generated by executeWithdrawalRequest function (maple sdk)'
       )
     }
 
+    // Only get Withdrawal Request Execute, ignore Withdrawal Request Close
+    // User need to create a separated instruction for that
     const [instruction] = tx.instructions
 
     return {
@@ -174,20 +190,19 @@ const LenderDepositForm = ({
       </Select>
 
       <Input
-        label="Deposit Amount"
-        value={form.depositAmount}
-        type="number"
-        min="0"
+        label="Withdrawal Request Address"
+        value={form.withdrawalRequestAddress}
+        type="string"
         onChange={(evt) =>
           handleSetForm({
             value: evt.target.value,
-            propertyName: 'depositAmount',
+            propertyName: 'withdrawalRequestAddress',
           })
         }
-        error={formErrors['depositAmount']}
+        error={formErrors['withdrawalRequestAddress']}
       />
     </>
   )
 }
 
-export default LenderDepositForm
+export default WithdrawalRequestExecuteForm

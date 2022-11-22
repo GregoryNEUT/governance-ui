@@ -129,6 +129,9 @@ import UpdateConfigParams from './components/instructions/Serum/UpdateConfigPara
 import ClaimMangoTokens from './components/instructions/Mango/ClaimTokens'
 import MapleFinanceLenderInitialize from './components/instructions/MapleFinance/LenderInitialize'
 import MapleFinanceLenderDeposit from './components/instructions/MapleFinance/LenderDeposit'
+import MapleFinanceLenderUnlockDeposit from './components/instructions/MapleFinance/LenderUnlockDeposit'
+import MapleFinanceWithdrawalRequestInitialize from './components/instructions/MapleFinance/WithdrawalRequestInitialize'
+import MapleFinanceWithdrawalRequestExecute from './components/instructions/MapleFinance/WithdrawalRequestExecute'
 
 const TITLE_LENGTH_LIMIT = 130
 
@@ -535,6 +538,9 @@ const New = () => {
       [Instructions.ClaimMangoTokens]: ClaimMangoTokens,
       [Instructions.MapleFinanceLenderInitialize]: MapleFinanceLenderInitialize,
       [Instructions.MapleFinanceLenderDeposit]: MapleFinanceLenderDeposit,
+      [Instructions.MapleFinanceLenderUnlockDeposit]: MapleFinanceLenderUnlockDeposit,
+      [Instructions.MapleFinanceWithdrawalRequestInitialize]: MapleFinanceWithdrawalRequestInitialize,
+      [Instructions.MapleFinanceWithdrawalRequestExecute]: MapleFinanceWithdrawalRequestExecute,
     }),
     []
   )
