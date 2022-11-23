@@ -12,6 +12,8 @@ import {
   DataUILabel,
   InstructionDataUI,
   DataUIAddress,
+  DataUIDateUTC,
+  DataUIWarning,
 } from '@components/InstructionDataUI'
 
 export const IGNORE_NONCE_ACCOUNT_LAYOUT = Array.from(new Array(7)).map(u8)
@@ -160,6 +162,15 @@ export const MAPLE_FINANCE_PROGRAM_INSTRUCTIONS = {
           )
         }
 
+        const cooldownPeriodDate = new Date()
+
+        cooldownPeriodDate.setTime(
+          new Date().getTime() +
+            // Transform seconds to milliseconds for timestamp
+            // Cast to any because the type is not correct
+            (poolData.config as any).cooldownPeriod.toNumber() * 1_000
+        )
+
         const uiAmount = nativeToUi(
           withdrawAmount,
           baseMintInfo.account.decimals
@@ -174,6 +185,13 @@ export const MAPLE_FINANCE_PROGRAM_INSTRUCTIONS = {
             <DataUIRow>
               <DataUILabel label="Withdrawal Request Address" />
               <DataUIAddress address={accounts[6].pubkey} />
+            </DataUIRow>
+            <DataUIRow>
+              <DataUIWarning message="Withdrawal request is subject to cooldown before being executable" />
+            </DataUIRow>
+            <DataUIRow>
+              <DataUILabel label="Withdrawal request cool off date" />
+              <DataUIDateUTC date={cooldownPeriodDate} />
             </DataUIRow>
           </InstructionDataUI>
         )
