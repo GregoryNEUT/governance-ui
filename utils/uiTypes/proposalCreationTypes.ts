@@ -533,6 +533,12 @@ export interface MapleFinanceWithdrawalRequestExecuteForm {
   withdrawalRequestAddress?: string
 }
 
+export interface MapleFinanceWithdrawalRequestCloseForm {
+  governedAccount?: AssetAccount
+  poolName?: MapleFinancePoolName
+  withdrawalRequestAddress?: string
+}
+
 export enum Instructions {
   Transfer,
   ProgramUpgrade,
@@ -627,6 +633,7 @@ export enum Instructions {
   MapleFinanceLenderUnlockDeposit,
   MapleFinanceWithdrawalRequestInitialize,
   MapleFinanceWithdrawalRequestExecute,
+  MapleFinanceWithdrawalRequestClose,
 }
 
 export type createParams = [

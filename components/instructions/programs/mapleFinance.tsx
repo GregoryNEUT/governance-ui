@@ -187,7 +187,7 @@ export const MAPLE_FINANCE_PROGRAM_INSTRUCTIONS = {
               <DataUIAddress address={accounts[6].pubkey} />
             </DataUIRow>
             <DataUIRow>
-              <DataUIWarning message="Withdrawal request is subject to cooldown before being executable" />
+              <DataUIWarning message="Withdrawal request is subject to cool down before being executable" />
             </DataUIRow>
             <DataUIRow>
               <DataUILabel label="Withdrawal request cool off date" />
@@ -198,7 +198,7 @@ export const MAPLE_FINANCE_PROGRAM_INSTRUCTIONS = {
       },
     },
 
-    999: {
+    90: {
       name: 'Maple Finance - Withdrawal Request Execute',
       accounts: [
         { name: 'Withdrawal Request' },
@@ -217,9 +217,45 @@ export const MAPLE_FINANCE_PROGRAM_INSTRUCTIONS = {
       getDataUI: async (
         _connection: Connection,
         _data: Uint8Array,
-        _accounts: AccountMetaData[]
+        accounts: AccountMetaData[]
       ) => {
-        return <></>
+        return (
+          <InstructionDataUI>
+            <DataUIRow>
+              <DataUILabel label="Withdrawal Request Address" />
+              <DataUIAddress address={accounts[0].pubkey} />
+            </DataUIRow>
+          </InstructionDataUI>
+        )
+      },
+    },
+
+    204: {
+      name: 'Maple Finance - Withdrawal Request Close',
+      accounts: [
+        { name: 'Globals' },
+        { name: 'Withdrawal Request' },
+        { name: 'Lender Owner' },
+        { name: 'Pool' },
+        { name: 'Lender' },
+        { name: 'Lender Share Account' },
+        { name: 'Withdrawal Request Locker' },
+        { name: 'System Program' },
+        { name: 'Token Program' },
+      ],
+      getDataUI: async (
+        _connection: Connection,
+        _data: Uint8Array,
+        accounts: AccountMetaData[]
+      ) => {
+        return (
+          <InstructionDataUI>
+            <DataUIRow>
+              <DataUILabel label="Withdrawal Request Address" />
+              <DataUIAddress address={accounts[1].pubkey} />
+            </DataUIRow>
+          </InstructionDataUI>
+        )
       },
     },
   },

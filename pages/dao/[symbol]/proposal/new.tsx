@@ -132,6 +132,7 @@ import MapleFinanceLenderDeposit from './components/instructions/MapleFinance/Le
 import MapleFinanceLenderUnlockDeposit from './components/instructions/MapleFinance/LenderUnlockDeposit'
 import MapleFinanceWithdrawalRequestInitialize from './components/instructions/MapleFinance/WithdrawalRequestInitialize'
 import MapleFinanceWithdrawalRequestExecute from './components/instructions/MapleFinance/WithdrawalRequestExecute'
+import MapleFinanceWithdrawalRequestClose from './components/instructions/MapleFinance/WithdrawalRequestClose'
 
 const TITLE_LENGTH_LIMIT = 130
 
@@ -541,6 +542,7 @@ const New = () => {
       [Instructions.MapleFinanceLenderUnlockDeposit]: MapleFinanceLenderUnlockDeposit,
       [Instructions.MapleFinanceWithdrawalRequestInitialize]: MapleFinanceWithdrawalRequestInitialize,
       [Instructions.MapleFinanceWithdrawalRequestExecute]: MapleFinanceWithdrawalRequestExecute,
+      [Instructions.MapleFinanceWithdrawalRequestClose]: MapleFinanceWithdrawalRequestClose,
     }),
     []
   )

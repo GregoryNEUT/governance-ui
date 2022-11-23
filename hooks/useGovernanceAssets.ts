@@ -614,6 +614,11 @@ export default function useGovernanceAssets() {
       name: 'Maple Finance: Withdrawal Request Execute',
       isVisible: canUseAnyInstruction,
     },
+    {
+      id: Instructions.MapleFinanceWithdrawalRequestClose,
+      name: 'Maple Finance: Withdrawal Request Close',
+      isVisible: canUseAnyInstruction,
+    },
     ...foresightInstructions,
   ]
   return {
